@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Google Generative AI Example</title>
+  <title>Google Generative AI</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -53,9 +53,15 @@
     document.querySelector("input[type=submit]").addEventListener("click", () => run());
 
     async function run() {
-      const prompt = document.getElementById("msg").value;
+      
+      var promptinicial = "você é um confeiteiro e não sabe falar de outro assunto";
 
-      const result = await model.generateContent(prompt);
+      var prompt = document.getElementById("msg").value;
+
+
+      var promptcompleto = promptinicial + prompt;
+
+      const result = await model.generateContent(promptcompleto);
       const response = await result.response;
       const text = await response.text();
 
