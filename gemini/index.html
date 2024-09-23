@@ -91,7 +91,7 @@
     async function sendHistory(prompt, responseText) {
       try {
         const userId = "user123"; // Você pode adaptar para pegar o userId dinamicamente
-        const response = await fetch('http://localhost:3000/api/historico', {
+        const response = await fetch('http://localhost:3000/api/conversation', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ userId, action: `Prompt: ${prompt}, Response: ${responseText}` })

@@ -2,11 +2,13 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const app = express();
+const cors = require('cors');
 
 
 // Configurações do Express
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
 
 // Conexão com o MongoDB
 const mongoURI = "mongodb+srv://dudareis:159357reis@cluster0.ifwnt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
@@ -87,5 +89,5 @@ function saveLogin(userId) {
 }
 
 // Iniciar o servidor
-app.listen(3000, () => console.log(`Servidor rodando na porta ${PORT}`));
+app.listen(3000, () => console.log(`Servidor rodando na porta 3000`));
 app.use(express.static('public'));
