@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Google Generative AI Example</title>
+  <title>Google Generative AI</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -29,38 +29,82 @@
       margin-top: 20px;
       white-space: pre-wrap;
     }
+
+    input[type="text"] {
+      width: calc(100% - 100px);
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-right: 10px;
+    }
+
+    input[type="submit"] {
+      padding: 10px 20px;
+      border: none;
+      background-color: #007bff;
+      color: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #0056b3;
+    }
   </style>
 </head>
 
 <body>
   <div class="output-container">
     <h1>Resposta Gerada</h1>
-    <div class="generated-text" id="generated-text">
-    </div>
-    <input type="text" id="msg" />
-    <input type="submit" />
+    <div class="generated-text" id="generated-text"></div>
+    <input type="text" id="msg" placeholder="Digite sua mensagem aqui" />
+    <input type="submit" value="Gerar" />
   </div>
 
   <script type="module">
     import { GoogleGenerativeAI } from "https://cdn.skypack.dev/@google/generative-ai";
 
     const API_KEY = "AIzaSyAE47CGOfQ6UswNEejn_MrGHc_hxkjo4Jc";
-
     const genAI = new GoogleGenerativeAI(API_KEY);
-
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     document.querySelector("input[type=submit]").addEventListener("click", () => run());
 
     async function run() {
+      const promptinicial = "você é um confeiteiro e não sabe falar de outro assunto";
       const prompt = document.getElementById("msg").value;
+      const promptcompleto = promptinicial + prompt;
 
-      const result = await model.generateContent(prompt);
+      // Gerar resposta com a IA
+      const result = await model.generateContent(promptcompleto);
       const response = await result.response;
       const text = await response.text();
 
+      // Atualizar a interface com a resposta gerada
       const generatedTextElement = document.getElementById('generated-text');
       generatedTextElement.textContent = text;
+
+      // Enviar o histórico para o backend
+      await sendHistory(prompt, text);
+    }
+
+    async function sendHistory(prompt, responseText) {
+      try {
+        const userId = "user123"; // Você pode adaptar para pegar o userId dinamicamente
+        const response = await fetch('http://localhost:3000/api/conversation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId, action: `Prompt: ${prompt}, Response: ${responseText}` })
+        });
+
+        if (response.ok) {
+          console.log('Histórico registrado com sucesso');
+        } else {
+          console.error('Erro ao registrar histórico');
+        }
+      } catch (error) {
+        console.error('Erro ao enviar histórico:', error);
+      }
     }
   </script>
 </body>
